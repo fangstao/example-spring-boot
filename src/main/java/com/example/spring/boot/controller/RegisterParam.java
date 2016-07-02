@@ -1,16 +1,20 @@
 package com.example.spring.boot.controller;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 /**
- * Created by pc on 2016/7/1.
+ * Created by pc on 2016/7/2.
  */
 public class RegisterParam {
-    @NotBlank(message = "{error.username.blank}")
     private String username;
-
-    @NotBlank(message = "{error.password.blank}")
     private String password;
+    private String captcha;
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
+    }
 
     public String getPassword() {
         return password;
@@ -26,5 +30,18 @@ public class RegisterParam {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public RegisterParam() {
+    }
+
+    private RegisterParam(String username, String password, String captcha) {
+        this.captcha = captcha;
+        this.password = password;
+        this.username = username;
+    }
+
+    public static final RegisterParam create(String username, String password, String captcha) {
+        return new RegisterParam(username, password, captcha);
     }
 }

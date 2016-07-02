@@ -1,4 +1,4 @@
-package com.example.spring.boot;
+package com.example.spring.boot.domain;
 
 /**
  * Created by pc on 2016/6/28.

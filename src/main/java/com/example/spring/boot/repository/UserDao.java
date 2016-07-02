@@ -1,14 +1,11 @@
-package com.example.spring.boot;
+package com.example.spring.boot.repository;
 
-import org.springframework.dao.DataAccessException;
+import com.example.spring.boot.domain.User;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.sql.Connection;

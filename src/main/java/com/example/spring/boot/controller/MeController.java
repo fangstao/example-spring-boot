@@ -1,6 +1,6 @@
 package com.example.spring.boot.controller;
 
-import com.example.spring.boot.User;
+import com.example.spring.boot.domain.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,13 +1,10 @@
 package com.example.spring.boot.config;
 
-import com.example.spring.boot.UserDao;
+import com.example.spring.boot.repository.UserDao;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 /**

@@ -13,7 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 @EnableAutoConfiguration
-@ComponentScan("com.example.spring.boot")
+@ComponentScan
 public class Application{
     public static void main(String[] args) {
         SpringApplication.run(Application.class);

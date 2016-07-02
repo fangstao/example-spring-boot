@@ -1,6 +1,6 @@
 package com.example.spring.boot.request.resolver;
 
-import com.example.spring.boot.User;
+import com.example.spring.boot.domain.User;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
