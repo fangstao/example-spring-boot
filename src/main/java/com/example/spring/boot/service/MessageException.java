@@ -1,4 +1,4 @@
-package com.example.spring.boot.message;
+package com.example.spring.boot.service;
 
 /**
  * Created by pc on 2016/7/2.
