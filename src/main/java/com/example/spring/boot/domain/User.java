@@ -1,32 +1,34 @@
 package com.example.spring.boot.domain;
 
-/**
- * Created by pc on 2016/6/28.
- */
-public class User {
-    private String name;
-    private Integer id;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-    public void setId(Integer id) {
-        this.id = id;
+@Entity
+@Table(name = "users")
+public class User extends EntityBase {
+    private String username;
+    private String password;
+
+    public String getPassword() {
+        return password;
     }
 
-    public String getName() {
-        return name;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUsername() {
+        return username;
     }
 
-    public Integer getId() {
-        return id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public final static User create(Integer id, String name) {
+    public static final User create(String username, String password) {
         User user = new User();
-        user.setId(id);
-        user.setName(name);
+        user.setUsername(username);
+        user.setPassword(password);
         return user;
     }
 }

@@ -1,11 +1,10 @@
 package com.example.spring.boot.domain;
 
+import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
-/**
- * Created by pc on 2016/7/2.
- */
-public abstract class Message {
+@MappedSuperclass
+public abstract class Message extends EntityBase{
     private String content;
     private String signature;
     private String phone;

@@ -1,6 +1,5 @@
 package com.example.spring.boot.config;
 
-import com.example.spring.boot.config.DaoConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -15,7 +14,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableTransactionManagement
-@Import(DaoConfig.class)
+@Import(RepositoryConfig.class)
 public class ServiceConfig {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
