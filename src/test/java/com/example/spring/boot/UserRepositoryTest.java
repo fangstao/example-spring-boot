@@ -45,8 +45,13 @@ public class UserRepositoryTest {
 
     @Test
     public void saveUser() throws Exception {
-        User user = User.create("jack", "rose");
+        String username = "jack";
+        String password = "rose";
+        User user = User.create(username, password);
         userRepository.save(user);
         assertNotNull(user.getId());
+        User userEntity = userRepository.findOne(user.getId());
+        assertEquals(username, userEntity.getUsername());
+        assertEquals(password, userEntity.getPassword());
     }
 }
