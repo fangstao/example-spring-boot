@@ -34,14 +34,14 @@ public class RegisterController {
 
     }
 
-    private boolean isUserRegisted(String username) {
+    private boolean isUserRegistered(String username) {
         User user = userService.findByUsername(username);
         return user != null;
     }
 
 
     public ResponseEntity getRegisterCaptcha(String username, String ip) {
-        if (isUserRegisted(username)) {
+        if (isUserRegistered(username)) {
             return badRequest().body("username.exists");
         }
         String captcha = captchaService.createRegisterCaptcha(username);
