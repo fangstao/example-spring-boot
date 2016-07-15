@@ -3,7 +3,7 @@ package com.example.spring.boot;
 import com.example.spring.boot.domain.User;
 import com.example.spring.boot.repository.UserRepository;
 import com.example.spring.boot.service.UserHasBeenRegisteredException;
-import com.example.spring.boot.service.UserServiceImpl;
+import com.example.spring.boot.service.impl.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
