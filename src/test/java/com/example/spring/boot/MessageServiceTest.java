@@ -3,7 +3,7 @@ package com.example.spring.boot;
 import com.example.spring.boot.repository.MessageRepository;
 import com.example.spring.boot.repository.MessageSpecification;
 import com.example.spring.boot.domain.CaptchaMessage;
-import com.example.spring.boot.service.MessageServiceImpl;
+import com.example.spring.boot.service.impl.MessageServiceImpl;
 import com.example.spring.boot.service.SendMessageTooManyTimesException;
 import com.example.spring.boot.service.SendMessageWithinIntervalException;
 import com.google.common.collect.Lists;

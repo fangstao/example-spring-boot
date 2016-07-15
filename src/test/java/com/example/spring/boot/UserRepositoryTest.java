@@ -28,7 +28,7 @@ import javax.persistence.EntityManager;
 @DataJpaTest
 @ActiveProfiles("development")
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {TestApplication.class})
+
 public class UserRepositoryTest {
     @Resource
     UserRepository userRepository;
@@ -45,11 +45,13 @@ public class UserRepositoryTest {
 
     @Test
     public void saveUser() throws Exception {
-        User user = User.create("jack", "rose");
+        String username = "jack";
+        String password = "rose";
+        User user = User.create(username, password);
         userRepository.save(user);
         assertNotNull(user.getId());
         User userEntity = userRepository.findOne(user.getId());
-        assertEquals("jack",userEntity.getUsername());
-        assertEquals("rose",userEntity.getPassword());
+        assertEquals(username, userEntity.getUsername());
+        assertEquals(password, userEntity.getPassword());
     }
 }

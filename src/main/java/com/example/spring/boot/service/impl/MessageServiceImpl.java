@@ -1,9 +1,13 @@
-package com.example.spring.boot.service;
+package com.example.spring.boot.service.impl;
 
 import com.example.spring.boot.domain.CaptchaMessage;
 import com.example.spring.boot.domain.Message;
 import com.example.spring.boot.repository.MessageRepository;
 import com.example.spring.boot.repository.MessageSpecification;
+import com.example.spring.boot.service.MessageException;
+import com.example.spring.boot.service.MessageService;
+import com.example.spring.boot.service.SendMessageTooManyTimesException;
+import com.example.spring.boot.service.SendMessageWithinIntervalException;
 import org.apache.commons.lang3.time.DateUtils;
 
 import javax.annotation.Resource;

@@ -1,7 +1,10 @@
-package com.example.spring.boot.service;
+package com.example.spring.boot.service.impl;
 
 import com.example.spring.boot.domain.User;
 import com.example.spring.boot.repository.UserRepository;
+import com.example.spring.boot.service.RegisterException;
+import com.example.spring.boot.service.UserHasBeenRegisteredException;
+import com.example.spring.boot.service.UserService;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
