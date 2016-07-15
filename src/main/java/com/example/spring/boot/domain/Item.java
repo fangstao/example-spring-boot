@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @DynamicUpdate
 @DynamicInsert
-public class Item extends EntityBase{
+public class Item extends EntityBase {
     @ManyToOne
     private Product product;
 
@@ -18,8 +18,14 @@ public class Item extends EntityBase{
 
     private Integer count;
 
-    @ManyToOne
-    private User user;
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
     public Product getProduct() {
         return product;

@@ -17,17 +17,29 @@ public class Order extends EntityBase {
     private User user;
 
     @OneToMany(mappedBy = "order")
-    private Set<Item> items;
+    private List<Item> items;
 
     @Enumerated(EnumType.STRING)
-    private OrderState orderState;
+    private OrderState state;
 
-    public OrderState getOrderState() {
-        return orderState;
+    @Column(precision = 20, scale = 2)
+    private Double totalPrice;
+
+    public Double getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setOrderState(OrderState orderState) {
-        this.orderState = orderState;
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+
+    public OrderState getState() {
+        return state;
+    }
+
+    public void setState(OrderState state) {
+        this.state = state;
     }
 
     public User getUser() {
@@ -38,11 +50,11 @@ public class Order extends EntityBase {
         this.user = user;
     }
 
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
@@ -50,11 +62,21 @@ public class Order extends EntityBase {
         items.add(item);
     }
 
-    public static Order create(User user, Set<Item> items) {
+
+    public static Order create(User user, List<Item> items) {
         Order order = new Order();
         order.setUser(user);
         order.setItems(items);
+        order.setTotalPrice(calculateTotalPrice(items));
         return order;
+    }
+
+    private static Double calculateTotalPrice(List<Item> items) {
+        return items.stream()
+                .mapToDouble(item -> {
+                    return item.getProduct().getPrice() * item.getCount();
+                })
+                .sum();
     }
 
 }

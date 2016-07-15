@@ -3,6 +3,7 @@ package com.example.spring.boot.service.impl;
 import com.example.spring.boot.domain.Item;
 import com.example.spring.boot.domain.Order;
 import com.example.spring.boot.domain.User;
+import com.example.spring.boot.repository.ItemRepository;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.service.OrderService;
 import com.example.spring.boot.service.ProductService;
@@ -22,11 +23,27 @@ public class OrderServiceImpl implements OrderService {
 
     private ProductService productService;
 
+    private ItemRepository itemRepository;
+
     @Override
     public Order createOrder(User user, List<Item> items) {
-        Order order = Order.create(user, new LinkedHashSet<>(items));
+        Order order = Order.create(user, items);
         orderRepository.save(order);
+        saveOrderItems(items, order);
         return order;
+    }
+
+    private void saveOrderItems(List<Item> items, Order order) {
+        items.stream()
+                .forEach(item->{
+                    item.setOrder(order);
+                    itemRepository.save(item);
+                });
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return orderRepository.findOne(id);
     }
 
     @Resource
@@ -42,5 +59,11 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+
+    @Resource
+    public void setItemRepository(ItemRepository itemRepository) {
+        this.itemRepository = itemRepository;
     }
 }

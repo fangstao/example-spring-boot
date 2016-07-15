@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface OrderService {
     Order createOrder(User user, List<Item> items);
+
+    Order findById(Long id);
 }
