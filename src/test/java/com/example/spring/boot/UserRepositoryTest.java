@@ -48,5 +48,8 @@ public class UserRepositoryTest {
         User user = User.create("jack", "rose");
         userRepository.save(user);
         assertNotNull(user.getId());
+        User userEntity = userRepository.findOne(user.getId());
+        assertEquals("jack",userEntity.getUsername());
+        assertEquals("rose",userEntity.getPassword());
     }
 }
