@@ -1,7 +1,7 @@
 package com.example.spring.boot;
 
 import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.state.WaitBuyerPayOrderState;
+import com.example.spring.boot.domain.OrderState;
 import com.example.spring.boot.repository.OrderRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ public class OrderRepositoryTest {
     @Test
     public void saveOrder() throws Exception {
         Order order = new Order();
-        order.setOrderState(new WaitBuyerPayOrderState());
+        order.setOrderState(OrderState.WAIT_PAYMENT);
         orderRepository.save(order);
 
     }

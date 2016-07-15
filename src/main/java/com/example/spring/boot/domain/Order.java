@@ -1,7 +1,5 @@
 package com.example.spring.boot.domain;
 
-import com.example.spring.boot.converter.OrderStateConverter;
-import com.example.spring.boot.domain.state.OrderState;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -21,7 +19,7 @@ public class Order extends EntityBase {
     @OneToMany(mappedBy = "order")
     private Set<Item> items;
 
-    @Convert(converter = OrderStateConverter.class)
+    @Enumerated(EnumType.STRING)
     private OrderState orderState;
 
     public OrderState getOrderState() {
