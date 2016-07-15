@@ -5,6 +5,7 @@ import com.example.spring.boot.domain.Order;
 import com.example.spring.boot.domain.User;
 import com.example.spring.boot.repository.ItemRepository;
 import com.example.spring.boot.repository.OrderRepository;
+import com.example.spring.boot.service.CreateOrderException;
 import com.example.spring.boot.service.OrderService;
 import com.example.spring.boot.service.ProductService;
 import com.example.spring.boot.service.UserService;
@@ -26,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private ItemRepository itemRepository;
 
     @Override
-    public Order createOrder(User user, List<Item> items) {
+    public Order createOrder(User user, List<Item> items) throws CreateOrderException {
         Order order = Order.create(user, items);
         orderRepository.save(order);
         saveOrderItems(items, order);
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void saveOrderItems(List<Item> items, Order order) {
         items.stream()
-                .forEach(item->{
+                .forEach(item -> {
                     item.setOrder(order);
                     itemRepository.save(item);
                 });

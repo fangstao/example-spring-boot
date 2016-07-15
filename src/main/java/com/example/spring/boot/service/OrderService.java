@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface OrderService {
-    Order createOrder(User user, List<Item> items);
+    Order createOrder(User user, List<Item> items) throws CreateOrderException;
 
     Order findById(Long id);
 }
