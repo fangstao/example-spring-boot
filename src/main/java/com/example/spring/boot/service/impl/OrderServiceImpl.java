@@ -28,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(User user, List<Item> items) throws CreateOrderException {
+
         Order order = Order.create(user, items);
         orderRepository.save(order);
         saveOrderItems(items, order);

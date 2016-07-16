@@ -64,11 +64,20 @@ public class Order extends EntityBase {
 
 
     public static Order create(User user, List<Item> items) {
+        reduceProductsStock(items);
         Order order = new Order();
         order.setUser(user);
         order.setItems(items);
         order.setTotalPrice(calculateTotalPrice(items));
         return order;
+    }
+
+    private static void reduceProductsStock(List<Item> items) {
+        items.stream()
+                .forEach(item -> {
+                    Product product = item.getProduct();
+                    product.minusStock(item.getCount());
+                });
     }
 
     private static Double calculateTotalPrice(List<Item> items) {
