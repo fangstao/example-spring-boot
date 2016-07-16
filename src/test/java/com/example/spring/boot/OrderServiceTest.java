@@ -7,7 +7,6 @@ import com.example.spring.boot.domain.User;
 import com.example.spring.boot.repository.ItemRepository;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.service.InsufficientProductStockException;
-import com.example.spring.boot.service.OrderService;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
 
 import static org.assertj.core.api.Assertions.*;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @SpringBootTest
 public class OrderServiceTest {
@@ -66,18 +64,18 @@ public class OrderServiceTest {
         product1.setId(1L);
         product1.setName("spaghetti");
         product1.setPrice(2.9);
-        product1.setTotal(20);
+        product1.setStock(20);
 
         product2 = new Product();
         product2.setId(2L);
         product2.setName("noodle");
         product2.setPrice(0.9);
-        product2.setTotal(20);
+        product2.setStock(20);
 
         insufficientProduct = new Product();
         insufficientProduct.setName("pizza");
         insufficientProduct.setPrice(0.9);
-        insufficientProduct.setTotal(3);
+        insufficientProduct.setStock(3);
     }
 
     private void initItemsContainsInsufficientProduct() {
@@ -163,19 +161,21 @@ public class OrderServiceTest {
                     return p.getProduct().getPrice() * p.getCount();
                 })
                 .sum();
+
         //save order success
         Order order = orderService.createOrder(user, items);
         assertThat(order.getId()).isNotNull();
 
-        // find order and then validate items and user
-        Order orderEntity = orderService.findById(order.getId());
-        assertThat(orderEntity).isEqualTo(order);
-        assertThat(orderEntity.getUser()).isEqualTo(user);
-        assertThat(orderEntity.getItems()).hasSameElementsAs(items);
-        assertThat(orderEntity.getTotalPrice()).isEqualTo(totalPrice);
+        //check items
+        assertThat(items).filteredOnNull("id").isEmpty();
+
+
+        // check product stock
+        assertThat(product1.getStock()).isEqualTo(18);
+        assertThat(product2.getStock()).isEqualTo(17);
     }
 
-
+    // order contains insufficient product stock
     @Test(expected = InsufficientProductStockException.class)
     public void itemsContainsInsufficientProduct() throws Exception {
         Order order = orderService.createOrder(user, itemsContainsInsufficientProduct);

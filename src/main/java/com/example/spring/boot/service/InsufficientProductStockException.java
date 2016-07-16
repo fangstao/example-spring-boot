@@ -1,5 +1,9 @@
 package com.example.spring.boot.service;
 
-public class InsufficientProductStockException extends CreateOrderException {
+import com.example.spring.boot.service.CreateOrderException;
 
+public class InsufficientProductStockException extends CreateOrderException {
+    public InsufficientProductStockException(String message) {
+        super(message);
+    }
 }

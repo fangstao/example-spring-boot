@@ -5,10 +5,12 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @DynamicUpdate
 @DynamicInsert
+@Table(name = "items")
 public class Item extends EntityBase {
     @ManyToOne
     private Product product;

@@ -28,7 +28,6 @@ import javax.persistence.EntityManager;
 @DataJpaTest
 @ActiveProfiles("development")
 @RunWith(SpringJUnit4ClassRunner.class)
-
 public class UserRepositoryTest {
     @Resource
     UserRepository userRepository;
