@@ -48,6 +48,12 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findOne(id);
     }
 
+    @Override
+    public void pay(Long orderId) {
+        Order order = findById(orderId);
+        order.pay();
+    }
+
     @Resource
     public void setOrderRepository(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;

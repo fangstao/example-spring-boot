@@ -1,15 +1,28 @@
 package com.example.spring.boot.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.util.Date;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class EntityBase {
 
     @Id
     @GeneratedValue
     private Long id;
+
+    @CreatedDate
+    protected Date creationDate;
+
+    @LastModifiedDate
+    protected Date modifyDate;
 
     public Long getId() {
         return id;
@@ -17,6 +30,14 @@ public abstract class EntityBase {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public Date getModifyDate() {
+        return modifyDate;
     }
 
     @Override
@@ -34,4 +55,5 @@ public abstract class EntityBase {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.spring.boot.domain;
 
+import com.example.spring.boot.service.InsufficientProductStockException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -63,8 +64,8 @@ public class Order extends EntityBase {
     }
 
 
-    public static Order create(User user, List<Item> items) {
-        reduceProductsStock(items);
+    public static Order create(User user, List<Item> items) throws InsufficientProductStockException {
+        minusProductsStock(items);
         Order order = new Order();
         order.setUser(user);
         order.setItems(items);
@@ -72,12 +73,15 @@ public class Order extends EntityBase {
         return order;
     }
 
-    private static void reduceProductsStock(List<Item> items) {
-        items.stream()
-                .forEach(item -> {
-                    Product product = item.getProduct();
-                    product.minusStock(item.getCount());
-                });
+    private static void minusProductsStock(List<Item> items) throws InsufficientProductStockException {
+
+        for (Item item : items) {
+            Product product = item.getProduct();
+            if (!product.hasEnoughStock(item.getCount())) {
+                throw new InsufficientProductStockException(String.format("product stock is not enough, expected %s, actual %s", item.getCount(), product.getStock()));
+            }
+            product.minusStock(item.getCount());
+        }
     }
 
     private static Double calculateTotalPrice(List<Item> items) {
@@ -88,4 +92,7 @@ public class Order extends EntityBase {
                 .sum();
     }
 
+    public void pay() {
+        getState().pay(this);
+    }
 }

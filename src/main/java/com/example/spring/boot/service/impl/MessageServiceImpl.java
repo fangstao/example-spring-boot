@@ -52,7 +52,7 @@ public class MessageServiceImpl implements MessageService {
                 MessageSpecification.create()
                         .fromIpEq(fromIp)
                         .creationDateAfter(fromDate);
-        return messageRepository.findBySpecifiation(specification);
+        return messageRepository.findBySpecification(specification);
     }
 
     private List<CaptchaMessage> findCaptchaMessagesByPhoneAfter(String phone, Date fromDate) {
@@ -60,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
                 MessageSpecification.create()
                         .phoneEq(phone)
                         .creationDateAfter(fromDate);
-        return messageRepository.findBySpecifiation(spec);
+        return messageRepository.findBySpecification(spec);
     }
 
     @Resource

@@ -50,19 +50,19 @@ public class MessageServiceTest {
                 MessageSpecification.create()
                         .phoneEq(mobile)
                         .creationDateAfter(new Date());
-        when(messageRepository.findBySpecifiation(argThat(new SpecificationMobileEqual(specification1)))).thenReturn(Lists.newArrayList());
+        when(messageRepository.findBySpecification(argThat(new SpecificationMobileEqual(specification1)))).thenReturn(Lists.newArrayList());
 
         MessageSpecification specification2 =
                 MessageSpecification.create()
                         .phoneEq(withinIntervalMobile)
                         .creationDateAfter(new Date());
-        when(messageRepository.findBySpecifiation(argThat(new SpecificationMobileEqual(specification2)))).thenReturn(Lists.newArrayList(new CaptchaMessage()));
+        when(messageRepository.findBySpecification(argThat(new SpecificationMobileEqual(specification2)))).thenReturn(Lists.newArrayList(new CaptchaMessage()));
 
         MessageSpecification specification3 =
                 MessageSpecification.create()
                         .fromIpEq(invalidIp)
                         .creationDateAfter(new Date());
-        when(messageRepository.findBySpecifiation(argThat(new SpecificationFromIpEqual(specification3)))).thenReturn(Lists.newArrayList(new CaptchaMessage(), new CaptchaMessage(), new CaptchaMessage()));
+        when(messageRepository.findBySpecification(argThat(new SpecificationFromIpEqual(specification3)))).thenReturn(Lists.newArrayList(new CaptchaMessage(), new CaptchaMessage(), new CaptchaMessage()));
         return messageRepository;
     }
 

@@ -12,4 +12,6 @@ public interface OrderService {
     Order createOrder(User user, List<Item> items) throws CreateOrderException;
 
     Order findById(Long id);
+
+    void pay(Long orderId);
 }
