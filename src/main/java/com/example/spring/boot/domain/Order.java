@@ -92,4 +92,7 @@ public class Order extends EntityBase {
                 .sum();
     }
 
+    public void pay() {
+        getState().pay(this);
+    }
 }

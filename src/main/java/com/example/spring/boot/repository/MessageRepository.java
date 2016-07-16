@@ -11,5 +11,5 @@ import java.util.List;
 public interface MessageRepository {
     void save(Message message);
 
-    List<CaptchaMessage> findBySpecifiation(MessageSpecification spec);
+    List<CaptchaMessage> findBySpecification(MessageSpecification spec);
 }
