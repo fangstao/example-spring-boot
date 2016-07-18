@@ -2,12 +2,14 @@ package com.example.spring.boot.service.impl;
 
 import com.example.spring.boot.domain.CaptchaMessage;
 import com.example.spring.boot.domain.Message;
+import com.example.spring.boot.domain.QCaptchaMessage;
 import com.example.spring.boot.repository.MessageRepository;
 import com.example.spring.boot.repository.MessageSpecification;
 import com.example.spring.boot.service.MessageException;
 import com.example.spring.boot.service.MessageService;
 import com.example.spring.boot.service.SendMessageTooManyTimesException;
 import com.example.spring.boot.service.SendMessageWithinIntervalException;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
@@ -50,19 +52,15 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private List<CaptchaMessage> findCaptchaMessagesByIpAfter(String fromIp, Date fromDate) {
-        MessageSpecification specification =
-                MessageSpecification.create()
-                        .fromIpEq(fromIp)
-                        .creationDateAfter(fromDate);
-        return messageRepository.findBySpecification(specification);
+        QCaptchaMessage message = QCaptchaMessage.captchaMessage;
+        Iterable<CaptchaMessage> messages = messageRepository.findAll(message.fromIp.eq(fromIp).and(message.creationDate.after(fromDate)));
+        return Lists.newArrayList(messages);
     }
 
     private List<CaptchaMessage> findCaptchaMessagesByPhoneAfter(String phone, Date fromDate) {
-        MessageSpecification spec =
-                MessageSpecification.create()
-                        .phoneEq(phone)
-                        .creationDateAfter(fromDate);
-        return messageRepository.findBySpecification(spec);
+        QCaptchaMessage message = QCaptchaMessage.captchaMessage;
+        Iterable<CaptchaMessage> messages = messageRepository.findAll(message.phone.eq(phone).and(message.creationDate.after(fromDate)));
+        return Lists.newArrayList(messages);
     }
 
     @Resource

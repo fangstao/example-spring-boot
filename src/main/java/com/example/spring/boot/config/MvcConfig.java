@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 
-@EnableWebMvc
 @Configuration
 public class MvcConfig extends WebMvcConfigurerAdapter {
     @Resource

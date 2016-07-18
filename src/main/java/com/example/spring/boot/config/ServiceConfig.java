@@ -14,7 +14,6 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableTransactionManagement
-@Import(RepositoryConfig.class)
 public class ServiceConfig {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {

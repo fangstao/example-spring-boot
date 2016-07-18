@@ -1,5 +1,7 @@
 package com.example.spring.boot;
 
+import com.example.spring.boot.domain.Message;
+import com.example.spring.boot.domain.QCaptchaMessage;
 import com.example.spring.boot.repository.MessageRepository;
 import com.example.spring.boot.repository.MessageSpecification;
 import com.example.spring.boot.domain.CaptchaMessage;
@@ -7,12 +9,16 @@ import com.example.spring.boot.service.impl.MessageServiceImpl;
 import com.example.spring.boot.service.SendMessageTooManyTimesException;
 import com.example.spring.boot.service.SendMessageWithinIntervalException;
 import com.google.common.collect.Lists;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.Date;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -27,6 +33,8 @@ public class MessageServiceTest {
     String withinIntervalMobile;
     String ip = "10.1.2.33";
     String invalidIp = "10.1.2.32";
+    private Date creationDate;
+    private int sendMessageIntervalInMinutes = 1;
 
     @Before
     public void setUp() throws Exception {
@@ -39,30 +47,30 @@ public class MessageServiceTest {
         message.setContent("your register captcha is 123456.");
         message.setFromIp(ip);
         message.setSignature("microsoft");
-        message.setCreationDate(new Date());
+        creationDate = new Date();
+        message.setCreationDate(creationDate);
         messageRepository = createMessageRepository();
         messageService.setMessageRepository(messageRepository);
+        messageService.setMinIntervalInMinutes(sendMessageIntervalInMinutes);
     }
 
     private MessageRepository createMessageRepository() {
         MessageRepository messageRepository = mock(MessageRepository.class);
-        MessageSpecification specification1 =
-                MessageSpecification.create()
-                        .phoneEq(mobile)
-                        .creationDateAfter(new Date());
-        when(messageRepository.findBySpecification(argThat(new SpecificationMobileEqual(specification1)))).thenReturn(Lists.newArrayList());
+        QCaptchaMessage message = QCaptchaMessage.captchaMessage;
+        Date fromDate = DateUtils.addMinutes(creationDate, -sendMessageIntervalInMinutes);
 
-        MessageSpecification specification2 =
-                MessageSpecification.create()
-                        .phoneEq(withinIntervalMobile)
-                        .creationDateAfter(new Date());
-        when(messageRepository.findBySpecification(argThat(new SpecificationMobileEqual(specification2)))).thenReturn(Lists.newArrayList(new CaptchaMessage()));
+        BooleanExpression phoneAndFromDate = message.phone.eq(mobile).and(message.creationDate.after(fromDate));
+        when(messageRepository.findAll(phoneAndFromDate)).thenReturn(Lists.newArrayList());
 
-        MessageSpecification specification3 =
-                MessageSpecification.create()
-                        .fromIpEq(invalidIp)
-                        .creationDateAfter(new Date());
-        when(messageRepository.findBySpecification(argThat(new SpecificationFromIpEqual(specification3)))).thenReturn(Lists.newArrayList(new CaptchaMessage(), new CaptchaMessage(), new CaptchaMessage()));
+        BooleanExpression fromIpAndDateExpression = message.fromIp.eq(ip).and(message.creationDate.after(fromDate));
+        when(messageRepository.findAll(fromIpAndDateExpression)).thenReturn(Lists.newArrayList());
+
+        BooleanExpression phoneAndFromDateWithinInterval = message.phone.eq(withinIntervalMobile).and(message.creationDate.after(fromDate));
+        when(messageRepository.findAll(phoneAndFromDateWithinInterval)).thenReturn(Lists.newArrayList(new CaptchaMessage()));
+
+        BooleanExpression fromIpAndDateInInterval = message.fromIp.eq(invalidIp).and(message.creationDate.after(fromDate));
+        when(messageRepository.findAll(fromIpAndDateInInterval)).thenReturn(Lists.newArrayList(new CaptchaMessage(), new CaptchaMessage(), new CaptchaMessage()));
+
         return messageRepository;
     }
 
@@ -70,47 +78,23 @@ public class MessageServiceTest {
     @Test
     public void sendCaptchaMessageSuccess() throws Exception {
         message.setPhone(mobile);
+        message.setFromIp(ip);
         messageService.send(message);
     }
 
     @Test(expected = SendMessageWithinIntervalException.class)
     public void sendCaptchaMessageWithinMinIntervalException() throws Exception {
         message.setPhone(withinIntervalMobile);
+        message.setFromIp(ip);
         messageService.send(message);
     }
 
     @Test(expected = SendMessageTooManyTimesException.class)
     public void sendCaptchaMessageTooTooManyTimesWithTheSameIp() throws Exception {
+        message.setPhone(mobile);
         message.setFromIp(invalidIp);
         messageService.send(message);
 
     }
 
-    class SpecificationFromIpEqual extends ArgumentMatcher<MessageSpecification> {
-        private MessageSpecification stub;
-
-        @Override
-        public boolean matches(Object argument) {
-            MessageSpecification arg = (MessageSpecification) argument;
-            return argument != null && stub.getFromIp().equals(arg.getFromIp());
-        }
-
-        public SpecificationFromIpEqual(MessageSpecification stub) {
-            this.stub = stub;
-        }
-    }
-
-    class SpecificationMobileEqual extends ArgumentMatcher<MessageSpecification> {
-        MessageSpecification spec;
-
-        @Override
-        public boolean matches(Object argument) {
-            MessageSpecification arg = (MessageSpecification) argument;
-            return arg != null && spec.getPhoneEq().equals(arg.getPhoneEq());
-        }
-
-        public SpecificationMobileEqual(MessageSpecification spec) {
-            this.spec = spec;
-        }
-    }
 }

@@ -4,11 +4,16 @@ import com.example.spring.boot.domain.CaptchaMessage;
 import com.example.spring.boot.domain.User;
 import com.example.spring.boot.service.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
 import static org.springframework.http.ResponseEntity.*;
 
+@RestController
 public class RegisterController {
     private UserService userService;
 
@@ -17,6 +22,7 @@ public class RegisterController {
     private MessageService messageService;
 
 
+    @PostMapping("/register")
     public ResponseEntity register(RegisterParam param) {
         boolean available = captchaService.isRegisterCaptchaAvailable(param.getUsername(), param.getCaptcha());
         if (!available) {
@@ -40,6 +46,7 @@ public class RegisterController {
     }
 
 
+    @GetMapping("/register/captcha")
     public ResponseEntity getRegisterCaptcha(String username, String ip) {
         if (isUserRegistered(username)) {
             return badRequest().body("username.exists");

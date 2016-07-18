@@ -102,7 +102,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void requestCaptchaForRegistedUsernameFailure() throws Exception {
+    public void requestCaptchaForRegisteredUsernameFailure() throws Exception {
         ResponseEntity response = controller.getRegisterCaptcha(registedUsername, clientIp);
         assertEquals(400, response.getStatusCode().value());
         assertEquals("username.exists", response.getBody());
