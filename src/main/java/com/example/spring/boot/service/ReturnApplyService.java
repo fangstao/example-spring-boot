@@ -1,6 +1,7 @@
 package com.example.spring.boot.service;
 
 import com.example.spring.boot.domain.ReturnApply;
+import com.example.spring.boot.domain.ReturnShipment;
 import org.hibernate.loader.custom.Return;
 
 /**
@@ -11,5 +12,7 @@ public interface ReturnApplyService {
 
     ReturnApply findById(Long applyId);
 
-    ReturnApply refuse(Long refuseReturnApplyId, String refuseRemark);
+    ReturnApply refuse(Long applyId, String refuseRemark);
+
+    ReturnShipment ship(Long applyId, String company, String serial);
 }

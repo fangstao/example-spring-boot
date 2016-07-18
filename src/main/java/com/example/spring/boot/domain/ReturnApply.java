@@ -83,4 +83,8 @@ public class ReturnApply extends EntityBase {
     public void refuse(String refuseRemark) {
         getState().refuse(this, refuseRemark);
     }
+
+    public ReturnShipment ship(String company, String serial) {
+        return getState().ship(this, company, serial);
+    }
 }

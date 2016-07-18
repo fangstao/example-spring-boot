@@ -3,7 +3,7 @@ package com.example.spring.boot;
 import com.example.spring.boot.domain.*;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.repository.ReturnApplyRepository;
-import com.example.spring.boot.service.RefundApplyService;
+import com.example.spring.boot.repository.ReturnShipmentRepository;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
 import com.example.spring.boot.service.impl.ReturnApplyServiceImpl;
 import com.google.common.collect.Lists;
@@ -22,9 +22,8 @@ public class OrderReturnTest {
     OrderServiceImpl orderService;
     OrderRepository orderRepository;
     ReturnApplyRepository returnApplyRepository;
-
+    ReturnShipmentRepository returnShipmentRepository;
     private ReturnApplyServiceImpl returnApplyService;
-
     private Long orderId = 1L;
     private String returnRemark = "I don't like this color.";
     private Long generatedApplyId = 1L;
@@ -35,7 +34,12 @@ public class OrderReturnTest {
     private Long returnApplyIdWithIllegalState = 3L;
     private Long refuseReturnApplyId = 4L;
     private Long refuseReturnApplyIdWithIllegalState = 5L;
+    private Long shipReturnApplyId = 6L;
+    private Long shipReturnApplyIdWithDuplicateShipment = 7L;
     private String refuseRemark = "don't support return.";
+    private String shipReturnCompany = "sf-express";
+    private String shipReturnSerial = "13865882466";
+    private Long generatedShipmentId = 1L;
 
 
     @Before
@@ -48,6 +52,23 @@ public class OrderReturnTest {
 
         returnApplyService = new ReturnApplyServiceImpl();
         returnApplyService.setReturnApplyRepository(returnApplyRepository);
+
+        returnShipmentRepository = mockReturnShipmentRepository();
+        returnApplyService.setReturnShipmentRepository(returnShipmentRepository);
+    }
+
+    private ReturnShipmentRepository mockReturnShipmentRepository() {
+        ReturnShipmentRepository returnShipmentRepository = mock(ReturnShipmentRepository.class);
+        when(returnShipmentRepository.save(any(ReturnShipment.class))).then(new Answer<ReturnShipment>() {
+            @Override
+            public ReturnShipment answer(InvocationOnMock invocation) throws Throwable {
+                ReturnShipment shipment = invocation.getArgumentAt(0, ReturnShipment.class);
+                shipment.setId(generatedShipmentId);
+                return shipment;
+            }
+        });
+        return returnShipmentRepository;
+
     }
 
     private ReturnApplyRepository mockReturnApplyRepository() {
@@ -94,6 +115,15 @@ public class OrderReturnTest {
                 ReturnApply apply = new ReturnApply();
                 apply.setId(refuseReturnApplyId);
                 apply.setState(ReturnState.WAIT_AGREE);
+                return apply;
+            }
+        });
+        when(returnApplyRepository.findOne(shipReturnApplyId)).thenAnswer(new Answer<ReturnApply>() {
+            @Override
+            public ReturnApply answer(InvocationOnMock invocation) throws Throwable {
+                ReturnApply apply = new ReturnApply();
+                apply.setState(ReturnState.AGREED);
+                apply.setId(shipReturnApplyId);
                 return apply;
             }
         });
@@ -198,5 +228,19 @@ public class OrderReturnTest {
     }
 
 
+    @Test
+    public void shipGoodsToSeller() throws Exception {
+        ReturnShipment shipment = returnApplyService.ship(shipReturnApplyId, shipReturnCompany, shipReturnSerial);
+        assertThat(shipment.getCompany()).isEqualToIgnoringCase(shipReturnCompany);
+        assertThat(shipment.getSerial()).isEqualTo(shipReturnSerial);
+        assertThat(shipment.getApply().getState()).isEqualTo(ReturnState.WAIT_CLAIM);
+    }
 
+
+
+    @Test
+    public void claimReturnShipment() throws Exception {
+
+
+    }
 }
