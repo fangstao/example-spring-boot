@@ -28,9 +28,16 @@ public enum ReturnState {
             return shipment;
         }
     },
-    WAIT_CLAIM,
+    WAIT_CLAIM{
+        @Override
+        public void claim(ReturnApply apply) {
+            Order order = apply.getOrder();
+            order.refund();
+            apply.setState(ReturnState.CLAIMED);
+        }
+    },
     REFUSED,
-    CANCELED;
+    CANCELED, CLAIMED;
 
     public void agree(ReturnApply apply) {
         throw new IllegalStateException(String.format("illegal agree operation for state %s", this));
@@ -42,5 +49,9 @@ public enum ReturnState {
 
     public ReturnShipment ship(ReturnApply apply, String company, String serial) {
         throw new IllegalStateException(String.format("illegal ship operation for state %s", this));
+    }
+
+    public void claim(ReturnApply apply) {
+        throw new IllegalStateException(String.format("illegal claim operation for state %s", this));
     }
 }

@@ -9,6 +9,7 @@ import com.example.spring.boot.service.MessageService;
 import com.example.spring.boot.service.SendMessageTooManyTimesException;
 import com.example.spring.boot.service.SendMessageWithinIntervalException;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * Created by pc on 2016/7/2.
  */
+@Service
 public class MessageServiceImpl implements MessageService {
     private int minIntervalInMinutes;
 

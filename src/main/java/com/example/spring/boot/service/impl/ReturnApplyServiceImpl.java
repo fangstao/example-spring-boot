@@ -45,6 +45,13 @@ public class ReturnApplyServiceImpl implements ReturnApplyService {
         return shipment;
     }
 
+    @Override
+    public ReturnApply claim(Long applyId) {
+        ReturnApply apply = findById(applyId);
+        apply.claim();
+        return apply;
+    }
+
     @Resource
     public void setReturnApplyRepository(ReturnApplyRepository returnApplyRepository) {
         this.returnApplyRepository = returnApplyRepository;

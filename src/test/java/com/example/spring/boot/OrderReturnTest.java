@@ -36,6 +36,8 @@ public class OrderReturnTest {
     private Long refuseReturnApplyIdWithIllegalState = 5L;
     private Long shipReturnApplyId = 6L;
     private Long shipReturnApplyIdWithDuplicateShipment = 7L;
+    private Long claimReturnApplyId = 8L;
+    private Long claimReturnApplyIdWithInvalidState = 9L;
     private String refuseRemark = "don't support return.";
     private String shipReturnCompany = "sf-express";
     private String shipReturnSerial = "13865882466";
@@ -124,6 +126,30 @@ public class OrderReturnTest {
                 ReturnApply apply = new ReturnApply();
                 apply.setState(ReturnState.AGREED);
                 apply.setId(shipReturnApplyId);
+                return apply;
+            }
+        });
+        when(returnApplyRepository.findOne(claimReturnApplyId)).thenAnswer(new Answer<ReturnApply>() {
+            @Override
+            public ReturnApply answer(InvocationOnMock invocation) throws Throwable {
+                ReturnApply apply = new ReturnApply();
+                apply.setState(ReturnState.WAIT_CLAIM);
+                apply.setId(claimReturnApplyId);
+                Order order = new Order();
+                order.setState(OrderState.SUCCESS);
+                apply.setOrder(order);
+                return apply;
+            }
+        });
+        when(returnApplyRepository.findOne(claimReturnApplyIdWithInvalidState)).thenAnswer(new Answer<ReturnApply>() {
+            @Override
+            public ReturnApply answer(InvocationOnMock invocation) throws Throwable {
+                ReturnApply apply = new ReturnApply();
+                apply.setState(ReturnState.CLAIMED);
+                apply.setId(claimReturnApplyIdWithInvalidState);
+                Order order = new Order();
+                order.setState(OrderState.CANCELED);
+                apply.setOrder(order);
                 return apply;
             }
         });
@@ -237,10 +263,15 @@ public class OrderReturnTest {
     }
 
 
-
     @Test
     public void claimReturnShipment() throws Exception {
+        ReturnApply apply = returnApplyService.claim(claimReturnApplyId);
+        assertThat(apply.getState()).isEqualTo(ReturnState.CLAIMED);
+        assertThat(apply.getOrder().getState()).isEqualTo(OrderState.CANCELED);
+    }
 
-
+    @Test(expected = IllegalStateException.class)
+    public void claimReturnShipmentWithInvalidState() throws Exception {
+        returnApplyService.claim(claimReturnApplyIdWithInvalidState);
     }
 }

@@ -15,4 +15,6 @@ public interface ReturnApplyService {
     ReturnApply refuse(Long applyId, String refuseRemark);
 
     ReturnShipment ship(Long applyId, String company, String serial);
+
+    ReturnApply claim(Long applyId);
 }

@@ -87,4 +87,8 @@ public class ReturnApply extends EntityBase {
     public ReturnShipment ship(String company, String serial) {
         return getState().ship(this, company, serial);
     }
+
+    public void claim() {
+        getState().claim(this);
+    }
 }

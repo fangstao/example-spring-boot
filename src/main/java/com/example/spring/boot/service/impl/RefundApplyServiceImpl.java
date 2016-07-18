@@ -3,12 +3,14 @@ package com.example.spring.boot.service.impl;
 import com.example.spring.boot.domain.RefundApply;
 import com.example.spring.boot.repository.RefundApplyRepository;
 import com.example.spring.boot.service.RefundApplyService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 /**
  * Created by fangtao on 16/7/16.
  */
+@Service
 public class RefundApplyServiceImpl implements RefundApplyService {
 
     private RefundApplyRepository refundApplyRepository;

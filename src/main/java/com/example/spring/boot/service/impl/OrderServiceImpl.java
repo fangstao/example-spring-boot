@@ -6,11 +6,12 @@ import com.example.spring.boot.service.CreateOrderException;
 import com.example.spring.boot.service.OrderService;
 import com.example.spring.boot.service.ProductService;
 import com.example.spring.boot.service.UserService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-
+@Service
 public class OrderServiceImpl implements OrderService {
 
     private UserService userService;
