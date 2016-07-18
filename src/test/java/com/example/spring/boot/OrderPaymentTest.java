@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-public class OrderPaymentServiceTest {
+public class OrderPaymentTest {
     private OrderServiceImpl orderService;
     private OrderRepository orderRepository;
     private Long orderId = 1L;
@@ -36,14 +36,6 @@ public class OrderPaymentServiceTest {
                 order.setState(OrderState.WAIT_PAYMENT);
                 return order;
             }
-        }).then(new Answer<Order>() {
-            @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.WAIT_SHIPMENT);
-                return order;
-            }
         });
 
         when(orderRepository.findOne(orderIdWithInvalidState)).then(new Answer<Order>() {
@@ -60,8 +52,7 @@ public class OrderPaymentServiceTest {
 
     @Test
     public void paySuccess() throws Exception {
-        orderService.pay(orderId);
-        Order order = orderService.findById(orderId);
+        Order order = orderService.pay(orderId);
         assertThat(order.getState()).isEqualTo(OrderState.WAIT_SHIPMENT);
     }
 

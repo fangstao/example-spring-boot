@@ -1,10 +1,17 @@
 package com.example.spring.boot.domain;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-public class CaptchaMessage extends Message{
+@DynamicInsert
+@DynamicUpdate
+@Table(name = "captcha_messages")
+public class CaptchaMessage extends Message {
 
     private String fromIp;
 
@@ -16,7 +23,7 @@ public class CaptchaMessage extends Message{
         this.fromIp = fromIp;
     }
 
-    public static final CaptchaMessage create(String phone,String content,String ip) {
+    public static final CaptchaMessage create(String phone, String content, String ip) {
         CaptchaMessage message = new CaptchaMessage();
         message.setFromIp(ip);
         message.setContent(content);

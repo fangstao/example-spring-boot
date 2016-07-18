@@ -1,11 +1,8 @@
 package com.example.spring.boot.service;
 
 
-import com.example.spring.boot.domain.Item;
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.User;
+import com.example.spring.boot.domain.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface OrderService {
@@ -13,5 +10,16 @@ public interface OrderService {
 
     Order findById(Long id);
 
-    void pay(Long orderId);
+    Order pay(Long orderId);
+
+    Order claim(long orderId);
+
+    RefundApply applyRefund(Long orderId, RefundReason refundReason, String refundRemark);
+
+    Comment comment(Long orderId, CommentGrade positive, String commentRemark, int score);
+
+    Shipment ship(long orderId, String shipmentCompany, String shipmentSerial);
+
+    ReturnApply applyReturn(Long orderId, ReturnReason reason, String remark);
+
 }

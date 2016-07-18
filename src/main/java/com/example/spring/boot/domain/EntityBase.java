@@ -56,4 +56,6 @@ public abstract class EntityBase {
         return id != null ? id.hashCode() : 0;
     }
 
+
+
 }

@@ -1,11 +1,13 @@
 package com.example.spring.boot.domain;
 
 import com.example.spring.boot.service.InsufficientProductStockException;
+import com.example.spring.boot.service.impl.OrderServiceImpl;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -26,6 +28,12 @@ public class Order extends EntityBase {
     @Column(precision = 20, scale = 2)
     private Double totalPrice;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    private List<RefundApply> refundApplies;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    private List<ReturnApply> returnApplies;
+
     public Double getTotalPrice() {
         return totalPrice;
     }
@@ -34,6 +42,13 @@ public class Order extends EntityBase {
         this.totalPrice = totalPrice;
     }
 
+    public List<RefundApply> getRefundApplies() {
+        return refundApplies;
+    }
+
+    public void setRefundApplies(List<RefundApply> refundApplies) {
+        this.refundApplies = refundApplies;
+    }
 
     public OrderState getState() {
         return state;
@@ -63,6 +78,13 @@ public class Order extends EntityBase {
         items.add(item);
     }
 
+    public List<ReturnApply> getReturnApplies() {
+        return returnApplies;
+    }
+
+    public void setReturnApplies(List<ReturnApply> returnApplies) {
+        this.returnApplies = returnApplies;
+    }
 
     public static Order create(User user, List<Item> items) throws InsufficientProductStockException {
         minusProductsStock(items);
@@ -94,5 +116,38 @@ public class Order extends EntityBase {
 
     public void pay() {
         getState().pay(this);
+    }
+
+
+    public void claim() {
+        getState().claim(this);
+    }
+
+    public RefundApply applyRefund(RefundReason refundReason, String refundRemark) {
+        return getState().applyRefund(this, refundReason, refundRemark);
+    }
+
+    public boolean hasRefundApplyInProcess() {
+        return Objects.nonNull(getRefundApplies()) && getRefundApplies().stream().anyMatch(apply -> RefundState.WAIT_AGREE.equals(apply.getState()));
+    }
+
+    void refund() {
+        getState().refund(this);
+    }
+
+    public Comment comment(CommentGrade grade, String remark, int score) {
+        return getState().comment(this, grade, remark, score);
+    }
+
+    public Shipment ship(String shipmentCompany, String shipmentSerial) {
+        return getState().ship(this, shipmentCompany, shipmentSerial);
+    }
+
+    public ReturnApply applyReturn(ReturnReason reason, String remark) {
+        return getState().applyReturn(this, reason, remark);
+    }
+
+    public boolean hasReturnApplyInProcess() {
+        return Objects.nonNull(getReturnApplies()) && getReturnApplies().stream().anyMatch(apply -> ReturnState.WAIT_AGREE.equals(apply.getState()));
     }
 }

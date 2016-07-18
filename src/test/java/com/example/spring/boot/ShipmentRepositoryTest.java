@@ -1,0 +1,40 @@
+package com.example.spring.boot;
+
+import com.example.spring.boot.domain.Order;
+import com.example.spring.boot.domain.Shipment;
+import com.example.spring.boot.repository.ShipmentRepository;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+import static org.assertj.core.api.Assertions.*;
+
+@DataJpaTest
+@EnableJpaAuditing
+@RunWith(SpringJUnit4ClassRunner.class)
+public class ShipmentRepositoryTest {
+    @Resource
+    private ShipmentRepository shipmentRepository;
+
+    @Test
+    @Sql(statements = {
+        "insert into orders (id) values (1)"
+    })
+    public void saveShipment() throws Exception {
+        Order order = new Order();
+        order.setId(1L);
+        Shipment shipment = new Shipment();
+        shipment.setCompany("顺丰快递");
+        shipment.setSerial("15800826960");
+        shipment.setOrder(order);
+        shipmentRepository.save(shipment);
+        assertThat(shipment.getId()).isNotNull();
+    }
+
+
+}
