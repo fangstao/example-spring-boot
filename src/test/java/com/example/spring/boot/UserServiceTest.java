@@ -20,7 +20,7 @@ public class UserServiceTest {
     UserServiceImpl userService;
     String username = "username";
     String password = "password";
-    String registedUsername = "registeredUsername";
+    String registeredUsername = "registeredUsername";
 
 
     @Before
@@ -43,7 +43,7 @@ public class UserServiceTest {
             }
         }).when(userRepository).save(argThat(new UsernameEqMatcher(user)));
 
-        when(userRepository.findByUsername(registedUsername)).thenReturn(User.create(registedUsername,password));
+        when(userRepository.findByUsername(registeredUsername)).thenReturn(User.create(registeredUsername,password));
 
         return userRepository;
     }
@@ -56,7 +56,7 @@ public class UserServiceTest {
 
     @Test(expected = UserHasBeenRegisteredException.class)
     public void userHasBeenRegistered() throws Exception {
-        userService.register(registedUsername, password);
+        userService.register(registeredUsername, password);
     }
 
 

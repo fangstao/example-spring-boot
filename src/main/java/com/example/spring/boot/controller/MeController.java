@@ -62,12 +62,12 @@ public class MeController {
 
         List<Item> items = new ArrayList<>();
         Item item = new Item();
-        item.setProduct(product1);
+        item.setProduct(this.product1);
         item.setCount(2);
         items.add(item);
 
         Item item2 = new Item();
-        item2.setProduct(product2);
+        item2.setProduct(this.product2);
         item2.setCount(3);
         items.add(item2);
 
