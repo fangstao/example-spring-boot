@@ -20,6 +20,7 @@ public class Product extends EntityBase {
     @Column(precision = 20, scale = 2)
     private Double price;
 
+
     public Double getPrice() {
         return price;
     }
@@ -43,6 +44,7 @@ public class Product extends EntityBase {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
+
 
     public void minusStock(Integer expectedCount) {
         if (!hasEnoughStock(expectedCount)) {

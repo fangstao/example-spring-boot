@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by fangtao on 16/7/17.
  */
-public class OrderReturnTest {
+public class ActualOrderReturnTest {
     OrderServiceImpl orderService;
     OrderRepository orderRepository;
     ReturnApplyRepository returnApplyRepository;
@@ -135,9 +135,9 @@ public class OrderReturnTest {
                 ReturnApply apply = new ReturnApply();
                 apply.setState(ReturnState.WAIT_CLAIM);
                 apply.setId(claimReturnApplyId);
-                Order order = new Order();
-                order.setState(OrderState.SUCCESS);
-                apply.setOrder(order);
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setState(ActualOrderState.SUCCESS);
+                apply.setOrder(actualOrder);
                 return apply;
             }
         });
@@ -147,9 +147,9 @@ public class OrderReturnTest {
                 ReturnApply apply = new ReturnApply();
                 apply.setState(ReturnState.CLAIMED);
                 apply.setId(claimReturnApplyIdWithInvalidState);
-                Order order = new Order();
-                order.setState(OrderState.CANCELED);
-                apply.setOrder(order);
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setState(ActualOrderState.CANCELED);
+                apply.setOrder(actualOrder);
                 return apply;
             }
         });
@@ -158,48 +158,48 @@ public class OrderReturnTest {
 
     private OrderRepository mockOrderRepository() {
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findOne(orderId)).then(new Answer<Order>() {
+        when(orderRepository.findOne(orderId)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.SUCCESS);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderId);
+                actualOrder.setState(ActualOrderState.SUCCESS);
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithIllegalState)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithIllegalState)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithIllegalState);
-                order.setTotalPrice(213.0);
-                order.setState(OrderState.WAIT_SHIPMENT);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithIllegalState);
+                actualOrder.setTotalPrice(213.0);
+                actualOrder.setState(ActualOrderState.WAIT_SHIPMENT);
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithApplyInProcess)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithApplyInProcess)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
                 RefundApply refundApply = new RefundApply();
                 refundApply.setState(RefundState.WAIT_AGREE);
-                Order order = new Order();
-                order.setId(orderIdWithApplyInProcess);
-                order.setState(OrderState.SUCCESS);
-                order.setRefundApplies(Lists.newArrayList(refundApply));
-                return order;
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithApplyInProcess);
+                actualOrder.setState(ActualOrderState.SUCCESS);
+                actualOrder.setRefundApplies(Lists.newArrayList(refundApply));
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithRefundApplyInProcess)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithRefundApplyInProcess)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
                 RefundApply refundApply = new RefundApply();
                 refundApply.setState(RefundState.WAIT_AGREE);
-                Order order = new Order();
-                order.setId(orderIdWithRefundApplyInProcess);
-                order.setTotalPrice(213.0);
-                order.setState(OrderState.SUCCESS);
-                order.setRefundApplies(Lists.newArrayList(refundApply));
-                return order;
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithRefundApplyInProcess);
+                actualOrder.setTotalPrice(213.0);
+                actualOrder.setState(ActualOrderState.SUCCESS);
+                actualOrder.setRefundApplies(Lists.newArrayList(refundApply));
+                return actualOrder;
             }
         });
         return orderRepository;
@@ -267,7 +267,7 @@ public class OrderReturnTest {
     public void claimReturnShipment() throws Exception {
         ReturnApply apply = returnApplyService.claim(claimReturnApplyId);
         assertThat(apply.getState()).isEqualTo(ReturnState.CLAIMED);
-        assertThat(apply.getOrder().getState()).isEqualTo(OrderState.CANCELED);
+        assertThat(((ActualOrder)apply.getOrder()).getState()).isEqualTo(ActualOrderState.CANCELED);
     }
 
     @Test(expected = IllegalStateException.class)

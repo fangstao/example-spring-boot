@@ -1,9 +1,6 @@
 package com.example.spring.boot.domain;
 
 
-import com.example.spring.boot.domain.EntityBase;
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.RefundReason;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -12,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "refund_applys")
+@Table(name = "refund_applies")
 public class RefundApply extends EntityBase {
 
     @ManyToOne
@@ -68,9 +65,9 @@ public class RefundApply extends EntityBase {
         this.state = state;
     }
 
-    public static RefundApply create(Order order, RefundReason refundReason, String refundRemark) {
+    public static RefundApply create(ActualOrder actualOrder, RefundReason refundReason, String refundRemark) {
         RefundApply apply = new RefundApply();
-        apply.setOrder(order);
+        apply.setOrder(actualOrder);
         apply.setReason(refundReason);
         apply.setRemark(refundRemark);
         apply.setState(RefundState.WAIT_AGREE);

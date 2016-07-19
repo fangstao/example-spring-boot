@@ -1,7 +1,7 @@
 package com.example.spring.boot;
 
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.OrderState;
+import com.example.spring.boot.domain.ActualOrder;
+import com.example.spring.boot.domain.ActualOrderState;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
 import org.junit.Before;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-public class OrderPaymentTest {
+public class ActualOrderPaymentTest {
     private OrderServiceImpl orderService;
     private OrderRepository orderRepository;
     private Long orderId = 1L;
@@ -28,23 +28,23 @@ public class OrderPaymentTest {
 
     private OrderRepository createOrderRepository() {
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findOne(orderId)).then(new Answer<Order>() {
+        when(orderRepository.findOne(orderId)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.WAIT_PAYMENT);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderId);
+                actualOrder.setState(ActualOrderState.WAIT_PAYMENT);
+                return actualOrder;
             }
         });
 
-        when(orderRepository.findOne(orderIdWithInvalidState)).then(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithInvalidState)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.WAIT_SHIPMENT);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderId);
+                actualOrder.setState(ActualOrderState.WAIT_SHIPMENT);
+                return actualOrder;
             }
         });
         return orderRepository;
@@ -52,8 +52,8 @@ public class OrderPaymentTest {
 
     @Test
     public void paySuccess() throws Exception {
-        Order order = orderService.pay(orderId);
-        assertThat(order.getState()).isEqualTo(OrderState.WAIT_SHIPMENT);
+        ActualOrder actualOrder = orderService.pay(orderId);
+        assertThat(actualOrder.getState()).isEqualTo(ActualOrderState.WAIT_SHIPMENT);
     }
 
     @Test(expected = IllegalStateException.class)

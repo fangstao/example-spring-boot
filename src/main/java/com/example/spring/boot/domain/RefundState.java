@@ -8,8 +8,8 @@ public enum RefundState {
     WAIT_AGREE {
         @Override
         public void agree(RefundApply refundApply) {
-            Order order = refundApply.getOrder();
-            order.refund();
+            Order actualOrder = refundApply.getOrder();
+            actualOrder.refund();
             refundApply.setState(AGREED);
         }
 

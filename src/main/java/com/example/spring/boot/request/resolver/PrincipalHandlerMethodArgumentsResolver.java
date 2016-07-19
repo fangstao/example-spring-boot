@@ -18,6 +18,8 @@ public class PrincipalHandlerMethodArgumentsResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        return User.create("fangtao", "password");
+        User user = User.create("fangtao", "password");
+        user.setId(1L);
+        return user;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.spring.boot;
 
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.OrderState;
+import com.example.spring.boot.domain.ActualOrder;
+import com.example.spring.boot.domain.ActualOrderState;
 import com.example.spring.boot.domain.RefundApply;
 import com.example.spring.boot.domain.RefundReason;
 import com.example.spring.boot.repository.RefundApplyRepository;
@@ -24,12 +24,12 @@ public class RefundApplyRepositoryTest {
     private RefundApplyRepository refundApplyRepository;
 
     @Test
-    @Sql(statements = "insert into orders(id, state) values(1, 'WAIT_CLAIM')")
+    @Sql(statements = "insert into orders(id, state, order_type) values(1, 'WAIT_CLAIM', 'ACTUAL')")
     public void saveRefundApply() throws Exception {
-        Order order = new Order();
-        order.setId(1L);
-        order.setState(OrderState.WAIT_CLAIM);
-        RefundApply apply = RefundApply.create(order, RefundReason.INAPPROPRIATE, "不合适");
+        ActualOrder actualOrder = new ActualOrder();
+        actualOrder.setId(1L);
+        actualOrder.setState(ActualOrderState.WAIT_CLAIM);
+        RefundApply apply = RefundApply.create(actualOrder, RefundReason.INAPPROPRIATE, "不合适");
         refundApplyRepository.save(apply);
         assertThat(apply.getId()).isNotNull();
     }

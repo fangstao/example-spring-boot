@@ -1,9 +1,5 @@
 package com.example.spring.boot.domain;
 
-import org.hibernate.loader.custom.Return;
-
-import java.util.Objects;
-
 /**
  * Created by fangtao on 16/7/17.
  */
@@ -31,8 +27,8 @@ public enum ReturnState {
     WAIT_CLAIM{
         @Override
         public void claim(ReturnApply apply) {
-            Order order = apply.getOrder();
-            order.refund();
+            Order actualOrder = apply.getOrder();
+            actualOrder.refund();
             apply.setState(ReturnState.CLAIMED);
         }
     },

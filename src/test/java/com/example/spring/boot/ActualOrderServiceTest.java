@@ -1,16 +1,18 @@
 package com.example.spring.boot;
 
+import com.example.spring.boot.domain.ActualOrder;
 import com.example.spring.boot.domain.Item;
-import com.example.spring.boot.domain.Order;
 import com.example.spring.boot.domain.Product;
 import com.example.spring.boot.domain.User;
 import com.example.spring.boot.repository.ItemRepository;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.service.InsufficientProductStockException;
+import com.example.spring.boot.service.ProductService;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
 
 import static org.assertj.core.api.Assertions.*;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,10 +24,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @SpringBootTest
-public class OrderServiceTest {
+public class ActualOrderServiceTest {
     private OrderServiceImpl orderService;
 
     private OrderRepository orderRepository;
@@ -39,6 +43,8 @@ public class OrderServiceTest {
     private Product product2;
 
     private Product insufficientProduct;
+
+    private ProductService productService;
 
     private List<Item> items;
 
@@ -55,8 +61,17 @@ public class OrderServiceTest {
         initItemsContainsInsufficientProduct();
         mockOrderRepository();
         mockItemRepository();
+        mockProductService();
         orderService.setOrderRepository(orderRepository);
         orderService.setItemRepository(itemRepository);
+        orderService.setProductService(productService);
+    }
+
+    private void mockProductService() {
+        productService = mock(ProductService.class);
+        when(productService.findById(product1.getId())).thenReturn(product1);
+        when(productService.findById(product2.getId())).thenReturn(product2);
+        when(productService.findById(insufficientProduct.getId())).thenReturn(insufficientProduct);
     }
 
     private void initProducts() {
@@ -116,6 +131,7 @@ public class OrderServiceTest {
         item2.setProduct(product2);
         item2.setCount(3);
         items.add(item2);
+        items = ImmutableList.copyOf(this.items);
     }
 
     private void mockItemRepository() {
@@ -125,7 +141,7 @@ public class OrderServiceTest {
             @Override
             public Item answer(InvocationOnMock invocation) throws Throwable {
                 Item item = invocation.getArgumentAt(0, Item.class);
-                item.setId(generatedOrderId);
+                item.setId(new Random().nextLong());
                 return item;
             }
         });
@@ -134,21 +150,21 @@ public class OrderServiceTest {
 
     private void mockOrderRepository() {
         orderRepository = mock(OrderRepository.class);
-        when(orderRepository.save(any(Order.class))).then(new Answer<Order>() {
+        when(orderRepository.save(any(ActualOrder.class))).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = invocation.getArgumentAt(0, Order.class);
-                order.setId(generatedOrderId);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = invocation.getArgumentAt(0, ActualOrder.class);
+                actualOrder.setId(generatedOrderId);
+                return actualOrder;
             }
         });
 
-        when(orderRepository.findOne(generatedOrderId)).then(new Answer<Order>() {
+        when(orderRepository.findOne(generatedOrderId)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = Order.create(createUser(), items);
-                order.setId(generatedOrderId);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = ActualOrder.create(createUser(), items);
+                actualOrder.setId(generatedOrderId);
+                return actualOrder;
             }
         });
     }
@@ -162,9 +178,9 @@ public class OrderServiceTest {
                 })
                 .sum();
 
-        //save order success
-        Order order = orderService.createOrder(user, items);
-        assertThat(order.getId()).isNotNull();
+        //save actualOrder success
+        ActualOrder actualOrder = orderService.createOrder(user, items);
+        assertThat(actualOrder.getId()).isNotNull();
 
         //check items
         assertThat(items).filteredOnNull("id").isEmpty();
@@ -178,7 +194,7 @@ public class OrderServiceTest {
     // order contains insufficient product stock
     @Test(expected = InsufficientProductStockException.class)
     public void itemsContainsInsufficientProduct() throws Exception {
-        Order order = orderService.createOrder(user, itemsContainsInsufficientProduct);
+        ActualOrder actualOrder = orderService.createOrder(user, itemsContainsInsufficientProduct);
     }
 
 

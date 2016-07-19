@@ -6,13 +6,13 @@ import com.example.spring.boot.domain.*;
 import java.util.List;
 
 public interface OrderService {
-    Order createOrder(User user, List<Item> items) throws CreateOrderException;
+    ActualOrder createOrder(User user, List<Item> items) throws CreateOrderException;
 
-    Order findById(Long id);
+    ActualOrder findById(Long id);
 
-    Order pay(Long orderId);
+    ActualOrder pay(Long orderId);
 
-    Order claim(long orderId);
+    ActualOrder claim(long orderId);
 
     RefundApply applyRefund(Long orderId, RefundReason refundReason, String refundRemark);
 

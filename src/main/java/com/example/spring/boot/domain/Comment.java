@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Table(name = "comments")
 public class Comment extends EntityBase{
     @OneToOne
-    private Order order;
+    private ActualOrder actualOrder;
 
     private String remark;
 
@@ -40,12 +40,12 @@ public class Comment extends EntityBase{
         this.grade = grade;
     }
 
-    public Order getOrder() {
-        return order;
+    public ActualOrder getActualOrder() {
+        return actualOrder;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setActualOrder(ActualOrder actualOrder) {
+        this.actualOrder = actualOrder;
     }
 
     public String getRemark() {
@@ -56,9 +56,9 @@ public class Comment extends EntityBase{
         this.remark = remark;
     }
 
-    public static Comment create(Order order, CommentGrade grade, String remark, int score) {
+    public static Comment create(ActualOrder actualOrder, CommentGrade grade, String remark, int score) {
         Comment comment = new Comment();
-        comment.setOrder(order);
+        comment.setActualOrder(actualOrder);
         comment.setGrade(grade);
         comment.setRemark(remark);
         comment.setScore(score);

@@ -1,13 +1,11 @@
 package com.example.spring.boot;
 
 
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.OrderState;
-import com.example.spring.boot.domain.QShipment;
+import com.example.spring.boot.domain.ActualOrder;
+import com.example.spring.boot.domain.ActualOrderState;
 import com.example.spring.boot.domain.Shipment;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.repository.ShipmentRepository;
-import com.example.spring.boot.service.ShipmentService;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
 import com.example.spring.boot.service.impl.ShipmentServiceImpl;
 import org.junit.Before;
@@ -15,12 +13,10 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class OrderShipmentTest {
+public class ActualOrderShipmentTest {
     private OrderServiceImpl orderService;
 
     private ShipmentServiceImpl shipmentService;
@@ -51,22 +47,22 @@ public class OrderShipmentTest {
 
     private OrderRepository mockOrderRepository() {
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findOne(orderId)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderId)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.WAIT_SHIPMENT);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderId);
+                actualOrder.setState(ActualOrderState.WAIT_SHIPMENT);
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithPaymentState)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithPaymentState)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithPaymentState);
-                order.setState(OrderState.SUCCESS);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithPaymentState);
+                actualOrder.setState(ActualOrderState.SUCCESS);
+                return actualOrder;
             }
         });
         return orderRepository;
@@ -93,7 +89,7 @@ public class OrderShipmentTest {
         assertThat(shipment.getId()).isNotNull();
 
         // check order status
-        assertThat(shipment.getOrder().getState()).isEqualTo(OrderState.WAIT_CLAIM);
+        assertThat(shipment.getOrder().getState()).isEqualTo(ActualOrderState.WAIT_CLAIM);
     }
 
     @Test(expected = IllegalStateException.class)

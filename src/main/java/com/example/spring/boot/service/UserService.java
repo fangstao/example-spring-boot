@@ -9,4 +9,6 @@ public interface UserService {
     User register(String username, String password) throws RegisterException;
 
     User findByUsername(String username);
+
+    User findById(long id);
 }

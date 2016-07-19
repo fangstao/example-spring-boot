@@ -1,9 +1,9 @@
 package com.example.spring.boot;
 
+import com.example.spring.boot.domain.ActualOrder;
+import com.example.spring.boot.domain.ActualOrderState;
 import com.example.spring.boot.domain.Comment;
 import com.example.spring.boot.domain.CommentGrade;
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.OrderState;
 import com.example.spring.boot.repository.CommentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,14 +28,13 @@ public class CommentRepositoryTest {
     private CommentRepository commentRepository;
 
     @Test
-    @Sql(statements = "insert into orders(id, state) values(1, 'WAIT_COMMENT')")
+    @Sql(statements = "insert into orders(id, state, order_type) values(1, 'WAIT_COMMENT', 'ACTUAL')")
     public void saveComment() throws Exception {
-        Order order = new Order();
-        order.setId(1L);
-        ;
-        order.setState(OrderState.WAIT_COMMENT);
-        Comment comment = Comment.create(order, CommentGrade.POSITIVE, "很好,还没用", 5);
+        ActualOrder actualOrder = new ActualOrder();
+        actualOrder.setId(1L);
+        actualOrder.setState(ActualOrderState.WAIT_COMMENT);
+        Comment comment = Comment.create(actualOrder, CommentGrade.POSITIVE, "很好,还没用", 5);
         commentRepository.save(comment);
-        assertThat(order.getId()).isNotNull();
+        assertThat(actualOrder.getId()).isNotNull();
     }
 }

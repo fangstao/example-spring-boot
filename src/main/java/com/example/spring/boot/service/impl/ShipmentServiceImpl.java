@@ -1,6 +1,6 @@
 package com.example.spring.boot.service.impl;
 
-import com.example.spring.boot.domain.QOrder;
+
 import com.example.spring.boot.domain.QShipment;
 import com.example.spring.boot.domain.Shipment;
 import com.example.spring.boot.repository.ShipmentRepository;

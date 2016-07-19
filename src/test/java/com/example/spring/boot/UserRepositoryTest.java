@@ -34,7 +34,7 @@ public class UserRepositoryTest {
 
     @Test
     @Sql(statements = {
-            "insert into users(username,password) values('tommy','tommy123')"
+            "insert into users(username, password) values('tommy', 'tommy123')"
     })
     public void findUserByUsername() throws Exception {
         String username = "tommy";

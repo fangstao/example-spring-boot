@@ -1,6 +1,6 @@
 package com.example.spring.boot;
 
-import com.example.spring.boot.domain.Order;
+import com.example.spring.boot.domain.ActualOrder;
 import com.example.spring.boot.domain.Shipment;
 import com.example.spring.boot.repository.ShipmentRepository;
 import org.junit.Test;
@@ -23,15 +23,15 @@ public class ShipmentRepositoryTest {
 
     @Test
     @Sql(statements = {
-        "insert into orders (id) values (1)"
+        "insert into orders (id, order_type) values (1, 'ACTUAL')"
     })
     public void saveShipment() throws Exception {
-        Order order = new Order();
-        order.setId(1L);
+        ActualOrder actualOrder = new ActualOrder();
+        actualOrder.setId(1L);
         Shipment shipment = new Shipment();
         shipment.setCompany("顺丰快递");
         shipment.setSerial("15800826960");
-        shipment.setOrder(order);
+        shipment.setOrder(actualOrder);
         shipmentRepository.save(shipment);
         assertThat(shipment.getId()).isNotNull();
     }

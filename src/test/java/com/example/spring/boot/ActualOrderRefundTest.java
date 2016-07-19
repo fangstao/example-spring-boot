@@ -4,7 +4,6 @@ package com.example.spring.boot;
 import com.example.spring.boot.domain.*;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.repository.RefundApplyRepository;
-import com.example.spring.boot.service.RefundApplyService;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
 import com.example.spring.boot.service.impl.RefundApplyServiceImpl;
 import com.google.common.collect.Lists;
@@ -18,7 +17,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class OrderRefundTest {
+public class ActualOrderRefundTest {
     private Long orderId = 1L;
     private Long orderIdWithWaitPaymentState = 2L;
     private Long orderIdExistsWaitAgreeApply = 3L;
@@ -69,16 +68,16 @@ public class OrderRefundTest {
         when(refundApplyRepository.findOne(refundId)).then(new Answer<RefundApply>() {
             @Override
             public RefundApply answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.WAIT_CLAIM);
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderId);
+                actualOrder.setState(ActualOrderState.WAIT_CLAIM);
 
                 RefundApply apply = new RefundApply();
                 apply.setId(refundId);
                 apply.setState(RefundState.WAIT_AGREE);
                 apply.setReason(refundReason);
                 apply.setRemark(refundRemark);
-                apply.setOrder(order);
+                apply.setOrder(actualOrder);
                 return apply;
             }
         });
@@ -131,64 +130,64 @@ public class OrderRefundTest {
 
     private OrderRepository mockOrderRepository() {
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findOne(orderId)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderId)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderId);
-                order.setState(OrderState.WAIT_CLAIM);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderId);
+                actualOrder.setState(ActualOrderState.WAIT_CLAIM);
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithWaitPaymentState)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithWaitPaymentState)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithWaitPaymentState);
-                order.setState(OrderState.WAIT_PAYMENT);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithWaitPaymentState);
+                actualOrder.setState(ActualOrderState.WAIT_PAYMENT);
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdExistsWaitAgreeApply)).then(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdExistsWaitAgreeApply)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithWaitPaymentState);
-                order.setState(OrderState.WAIT_PAYMENT);
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithWaitPaymentState);
+                actualOrder.setState(ActualOrderState.WAIT_PAYMENT);
                 RefundApply apply = new RefundApply();
                 apply.setState(RefundState.WAIT_AGREE);
-                apply.setOrder(order);
-                order.setRefundApplies(Lists.newArrayList(apply));
-                return order;
+                apply.setOrder(actualOrder);
+                actualOrder.setRefundApplies(Lists.newArrayList(apply));
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithReturnApplyInProcess)).then(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithReturnApplyInProcess)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithReturnApplyInProcess);
-                order.setState(OrderState.WAIT_PAYMENT);
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithReturnApplyInProcess);
+                actualOrder.setState(ActualOrderState.WAIT_PAYMENT);
 
                 ReturnApply apply = new ReturnApply();
                 apply.setState(ReturnState.WAIT_AGREE);
                 apply.setId(refundId);
 
-                order.setReturnApplies(Lists.newArrayList(apply));
-                return order;
+                actualOrder.setReturnApplies(Lists.newArrayList(apply));
+                return actualOrder;
             }
         });
 
-        when(orderRepository.findOne(orderIdWithRefusedApply)).then(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithRefusedApply)).then(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithRefusedApply);
-                order.setState(OrderState.WAIT_CLAIM);
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithRefusedApply);
+                actualOrder.setState(ActualOrderState.WAIT_CLAIM);
                 RefundApply apply = new RefundApply();
                 apply.setState(RefundState.REFUSED);
-                apply.setOrder(order);
-                order.setRefundApplies(Lists.newArrayList(apply));
-                return order;
+                apply.setOrder(actualOrder);
+                actualOrder.setRefundApplies(Lists.newArrayList(apply));
+                return actualOrder;
             }
         });
         return orderRepository;
@@ -234,7 +233,7 @@ public class OrderRefundTest {
 
         assertThat(apply.getState()).isEqualTo(RefundState.AGREED);
 
-        assertThat(apply.getOrder().getState()).isEqualTo(OrderState.CANCELED);
+        assertThat(((ActualOrder)apply.getOrder()).getState()).isEqualTo(ActualOrderState.CANCELED);
     }
 
     @Test

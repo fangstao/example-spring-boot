@@ -4,7 +4,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -15,15 +14,15 @@ import javax.persistence.Table;
 public class Shipment extends EntityBase {
 
     @OneToOne
-    private Order order;
+    private ActualOrder order;
     private String company;
     private String serial;
 
-    public Order getOrder() {
+    public ActualOrder getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(ActualOrder order) {
         this.order = order;
     }
 
@@ -43,9 +42,9 @@ public class Shipment extends EntityBase {
         this.serial = serial;
     }
 
-    public static Shipment create(Order order,String company, String serial) {
+    public static Shipment create(ActualOrder actualOrder, String company, String serial) {
         Shipment ship = new Shipment();
-        ship.setOrder(order);
+        ship.setOrder(actualOrder);
         ship.setCompany(company);
         ship.setSerial(serial);
         return ship;

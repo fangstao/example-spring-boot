@@ -1,9 +1,9 @@
 package com.example.spring.boot;
 
+import com.example.spring.boot.domain.ActualOrder;
 import com.example.spring.boot.domain.Comment;
 import com.example.spring.boot.domain.CommentGrade;
-import com.example.spring.boot.domain.Order;
-import com.example.spring.boot.domain.OrderState;
+import com.example.spring.boot.domain.ActualOrderState;
 import com.example.spring.boot.repository.CommentRepository;
 import com.example.spring.boot.repository.OrderRepository;
 import com.example.spring.boot.service.impl.OrderServiceImpl;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by fangtao on 16/7/17.
  */
-public class OrderCommentTest {
+public class ActualOrderCommentTest {
     private OrderServiceImpl orderService;
     private CommentRepository commentRepository;
     private OrderRepository orderRepository;
@@ -40,23 +40,23 @@ public class OrderCommentTest {
 
     private OrderRepository mockOrderRepository() {
         OrderRepository orderRepository = mock(OrderRepository.class);
-        when(orderRepository.findOne(orderId)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderId)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setState(OrderState.WAIT_COMMENT);
-                order.setId(orderId);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setState(ActualOrderState.WAIT_COMMENT);
+                actualOrder.setId(orderId);
+                return actualOrder;
             }
         });
-        when(orderRepository.findOne(orderIdWithInvalidState)).thenAnswer(new Answer<Order>() {
+        when(orderRepository.findOne(orderIdWithInvalidState)).thenAnswer(new Answer<ActualOrder>() {
             @Override
-            public Order answer(InvocationOnMock invocation) throws Throwable {
-                Order order = new Order();
-                order.setId(orderIdWithInvalidState);
-                order.setState(OrderState.WAIT_SHIPMENT);
-                order.setTotalPrice(18.0);
-                return order;
+            public ActualOrder answer(InvocationOnMock invocation) throws Throwable {
+                ActualOrder actualOrder = new ActualOrder();
+                actualOrder.setId(orderIdWithInvalidState);
+                actualOrder.setState(ActualOrderState.WAIT_SHIPMENT);
+                actualOrder.setTotalPrice(18.0);
+                return actualOrder;
             }
         });
         return orderRepository;
@@ -82,8 +82,8 @@ public class OrderCommentTest {
         assertThat(comment.getRemark()).isEqualTo(commentRemark);
         assertThat(comment.getScore()).isEqualTo(score);
         assertThat(comment.getGrade()).isEqualTo(commentGrade);
-        assertThat(comment.getOrder().getId()).isEqualTo(orderId);
-        assertThat(comment.getOrder().getState()).isEqualTo(OrderState.SUCCESS);
+        assertThat(comment.getActualOrder().getId()).isEqualTo(orderId);
+        assertThat(comment.getActualOrder().getState()).isEqualTo(ActualOrderState.SUCCESS);
     }
 
     @Test(expected = IllegalStateException.class)

@@ -7,6 +7,7 @@ import com.example.spring.boot.service.OrderService;
 import com.example.spring.boot.service.ProductService;
 import com.example.spring.boot.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,69 +32,76 @@ public class OrderServiceImpl implements OrderService {
     private ReturnApplyRepository returnApplyRepository;
 
     @Override
-    public Order createOrder(User user, List<Item> items) throws CreateOrderException {
-
-        Order order = Order.create(user, items);
-        orderRepository.save(order);
-        saveOrderItems(items, order);
-        return order;
+    @Transactional(readOnly = false, rollbackFor = Throwable.class)
+    public ActualOrder createOrder(User user, List<Item> items) throws CreateOrderException {
+        replaceProductsWithEntity(items);
+        ActualOrder actualOrder = ActualOrder.create(user, items);
+        orderRepository.save(actualOrder);
+        saveOrderItems(items, actualOrder);
+        return actualOrder;
     }
 
-    private void saveOrderItems(List<Item> items, Order order) {
-        items.stream()
-                .forEach(item -> {
-                    item.setOrder(order);
-                    itemRepository.save(item);
-                });
+    private void replaceProductsWithEntity(List<Item> items) {
+        items.forEach(item -> {
+            Product product = productService.findById(item.getProduct().getId());
+            item.setProduct(product);
+        });
+    }
+
+    private void saveOrderItems(List<Item> items, ActualOrder actualOrder) {
+        for (Item item : items) {
+            item.setOrder(actualOrder);
+            itemRepository.save(item);
+        }
     }
 
     @Override
-    public Order findById(Long id) {
+    public ActualOrder findById(Long id) {
         return orderRepository.findOne(id);
     }
 
     @Override
-    public Order pay(Long orderId) {
-        Order order = findById(orderId);
-        order.pay();
-        return order;
+    public ActualOrder pay(Long orderId) {
+        ActualOrder actualOrder = findById(orderId);
+        actualOrder.pay();
+        return actualOrder;
     }
 
 
     @Override
-    public Order claim(long orderId) {
-        Order order = findById(orderId);
-        order.claim();
-        return order;
+    public ActualOrder claim(long orderId) {
+        ActualOrder actualOrder = findById(orderId);
+        actualOrder.claim();
+        return actualOrder;
     }
 
     @Override
     public RefundApply applyRefund(Long orderId, RefundReason refundReason, String refundRemark) {
-        Order order = findById(orderId);
-        RefundApply apply = order.applyRefund(refundReason, refundRemark);
+        ActualOrder actualOrder = findById(orderId);
+        RefundApply apply = actualOrder.applyRefund(refundReason, refundRemark);
         refundApplyRepository.save(apply);
         return apply;
     }
 
     public Comment comment(Long orderId, CommentGrade grade, String remark, int score) {
-        Order order = findById(orderId);
-        Comment comment = order.comment(grade, remark, score);
+        ActualOrder actualOrder = findById(orderId);
+        Comment comment = actualOrder.comment(grade, remark, score);
         commentRepository.save(comment);
         return comment;
     }
 
     @Override
     public Shipment ship(long orderId, String shipmentCompany, String shipmentSerial) {
-        Order order = findById(orderId);
-        Shipment shipment = order.ship(shipmentCompany, shipmentSerial);
+        ActualOrder actualOrder = findById(orderId);
+        Shipment shipment = actualOrder.ship(shipmentCompany, shipmentSerial);
         shipmentRepository.save(shipment);
         return shipment;
     }
 
     @Override
     public ReturnApply applyReturn(Long orderId, ReturnReason reason, String remark) {
-        Order order = findById(orderId);
-        ReturnApply apply = order.applyReturn(reason, remark);
+        ActualOrder actualOrder = findById(orderId);
+        ReturnApply apply = actualOrder.applyReturn(reason, remark);
         returnApplyRepository.save(apply);
         return apply;
     }

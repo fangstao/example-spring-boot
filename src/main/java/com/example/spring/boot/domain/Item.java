@@ -20,12 +20,11 @@ public class Item extends EntityBase {
 
     private Integer count;
 
-
     public Order getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(ActualOrder order) {
         this.order = order;
     }
 
