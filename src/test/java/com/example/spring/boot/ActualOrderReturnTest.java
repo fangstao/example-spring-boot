@@ -205,6 +205,10 @@ public class ActualOrderReturnTest {
         return orderRepository;
     }
 
+    /**
+     * 申请退货成功
+     * @throws Exception
+     */
     @Test
     public void applyReturn() throws Exception {
         ReturnApply apply = orderService.applyReturn(orderId, ReturnReason.INAPPROPRIATE, returnRemark);
@@ -213,32 +217,56 @@ public class ActualOrderReturnTest {
         assertThat(apply.getState()).isEqualTo(ReturnState.WAIT_AGREE);
     }
 
-    @Test(expected = IllegalStateException.class)
+    /**
+     * 订单状态不正确，事情退货失败
+     * @throws Exception
+     */
+    @Test(expected  = IllegalStateException.class)
     public void applyReturnWithIllegalState() throws Exception {
         orderService.applyReturn(orderIdWithIllegalState, ReturnReason.INAPPROPRIATE, returnRemark);
     }
 
+    /**
+     * 已存在处理中的退货，申请退货失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void applyReturnWithReturnApplyInProcess() throws Exception {
         orderService.applyReturn(orderIdWithApplyInProcess, ReturnReason.INAPPROPRIATE, returnRemark);
     }
 
+    /**
+     * 已存在处理中的退款申请，申请失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void applyReturnWithRefundApplyInProcess() throws Exception {
         orderService.applyReturn(orderIdWithRefundApplyInProcess, ReturnReason.INAPPROPRIATE, returnRemark);
     }
 
+    /**
+     * 卖家同意退货
+     * @throws Exception
+     */
     @Test
     public void agreeReturnApply() throws Exception {
         ReturnApply apply = returnApplyService.agree(returnApplyId);
         assertThat(apply.getState()).isEqualTo(ReturnState.AGREED);
     }
 
+    /**
+     * 同意退货失败，订单状态不正确
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void agreeReturnApplyWithIllegalState() throws Exception {
         ReturnApply apply = returnApplyService.agree(returnApplyIdWithIllegalState);
     }
 
+    /**
+     * 卖家拒绝退货申请
+     * @throws Exception
+     */
     @Test
     public void refuseReturnApplySuccess() throws Exception {
         ReturnApply apply = returnApplyService.refuse(refuseReturnApplyId, refuseRemark);
@@ -247,13 +275,20 @@ public class ActualOrderReturnTest {
 
     }
 
+    /**
+     * 订单状态不正确，拒绝退货失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void refuseReturnApplyWithIllegalState() throws Exception {
         ReturnApply apply = returnApplyService.refuse(refuseReturnApplyIdWithIllegalState, refuseRemark);
 
     }
 
-
+    /**
+     * 买家发货
+     * @throws Exception
+     */
     @Test
     public void shipGoodsToSeller() throws Exception {
         ReturnShipment shipment = returnApplyService.ship(shipReturnApplyId, shipReturnCompany, shipReturnSerial);
@@ -262,7 +297,10 @@ public class ActualOrderReturnTest {
         assertThat(shipment.getApply().getState()).isEqualTo(ReturnState.WAIT_CLAIM);
     }
 
-
+    /**
+     * 卖家签收货物
+     * @throws Exception
+     */
     @Test
     public void claimReturnShipment() throws Exception {
         ReturnApply apply = returnApplyService.claim(claimReturnApplyId);
@@ -270,6 +308,10 @@ public class ActualOrderReturnTest {
         assertThat(((ActualOrder)apply.getOrder()).getState()).isEqualTo(ActualOrderState.CANCELED);
     }
 
+    /**
+     * 订单状态不正确，签收失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void claimReturnShipmentWithInvalidState() throws Exception {
         returnApplyService.claim(claimReturnApplyIdWithInvalidState);

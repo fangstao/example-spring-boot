@@ -12,7 +12,9 @@ import org.mockito.stubbing.Answer;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
+/**
+ * 支付订单
+ */
 public class ActualOrderPaymentTest {
     private OrderServiceImpl orderService;
     private OrderRepository orderRepository;
@@ -50,12 +52,20 @@ public class ActualOrderPaymentTest {
         return orderRepository;
     }
 
+    /**
+     * 支付成功
+     * @throws Exception
+     */
     @Test
     public void paySuccess() throws Exception {
         ActualOrder actualOrder = orderService.pay(orderId);
         assertThat(actualOrder.getState()).isEqualTo(ActualOrderState.WAIT_SHIPMENT);
     }
 
+    /**
+     * 订单状态不正确，无法支付
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void payWithInvalidState() throws Exception {
         orderService.pay(orderIdWithInvalidState);

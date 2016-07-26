@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
+ * 评价订单
  * Created by fangtao on 16/7/17.
  */
 public class ActualOrderCommentTest {
@@ -75,6 +76,10 @@ public class ActualOrderCommentTest {
         return commentRepository;
     }
 
+    /**
+     * 评价成功
+     * @throws Exception
+     */
     @Test
     public void commentOrder() throws Exception {
         Comment comment = orderService.comment(orderId, commentGrade, commentRemark, score);
@@ -86,6 +91,10 @@ public class ActualOrderCommentTest {
         assertThat(comment.getActualOrder().getState()).isEqualTo(ActualOrderState.SUCCESS);
     }
 
+    /**
+     * 评价失败，订单状态不正确
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void commentOrderWithInvalidState() throws Exception {
         Comment comment = orderService.comment(orderIdWithInvalidState, commentGrade, commentRemark, score);

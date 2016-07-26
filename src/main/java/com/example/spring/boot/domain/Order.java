@@ -9,6 +9,7 @@ import java.util.List;
 
 
 /**
+ * 订单
  * Created by pc on 2016/7/19.
  */
 @Entity

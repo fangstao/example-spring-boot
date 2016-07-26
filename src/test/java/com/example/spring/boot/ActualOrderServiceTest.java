@@ -28,6 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 创建订单
+ */
 @SpringBootTest
 public class ActualOrderServiceTest {
     private OrderServiceImpl orderService;
@@ -169,6 +172,10 @@ public class ActualOrderServiceTest {
         });
     }
 
+    /**
+     * 创建订单
+     * @throws Exception
+     */
     @Test
     public void createOrderSuccess() throws Exception {
 

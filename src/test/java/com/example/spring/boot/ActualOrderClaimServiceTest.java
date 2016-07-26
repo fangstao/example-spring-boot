@@ -27,12 +27,20 @@ public class ActualOrderClaimServiceTest {
         orderService.setOrderRepository(orderRepository);
     }
 
+    /**
+     * 买家签收货物成功
+     * @throws Exception
+     */
     @Test
     public void claimOrder() throws Exception {
         ActualOrder actualOrder = orderService.claim(orderId);
         assertThat(actualOrder.getState()).isEqualTo(ActualOrderState.WAIT_COMMENT);
     }
 
+    /**
+     * 订单状态不正确，签收失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void claimOrderWithInvalidState() throws Exception {
         orderService.claim(orderIdWithInvalidState);

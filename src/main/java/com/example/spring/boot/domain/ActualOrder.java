@@ -8,6 +8,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 现货订单
+ */
 @Entity
 @DynamicInsert
 @DynamicUpdate

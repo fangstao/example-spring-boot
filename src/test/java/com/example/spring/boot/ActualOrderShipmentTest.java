@@ -16,6 +16,9 @@ import org.mockito.stubbing.Answer;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * 卖家发货
+ */
 public class ActualOrderShipmentTest {
     private OrderServiceImpl orderService;
 
@@ -81,6 +84,10 @@ public class ActualOrderShipmentTest {
         return shipmentRepository;
     }
 
+    /**
+     * 卖家发货这成功
+     * @throws Exception
+     */
     @Test
     public void shipOrder() throws Exception {
         Shipment shipment = orderService.ship(orderId, shipmentCompany, shipmentSerial);
@@ -92,6 +99,10 @@ public class ActualOrderShipmentTest {
         assertThat(shipment.getOrder().getState()).isEqualTo(ActualOrderState.WAIT_CLAIM);
     }
 
+    /**
+     * 订单状态不正确，发货失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void shipOrderWithWaitPaymentState() throws Exception {
         Shipment shipment = orderService.ship(orderIdWithPaymentState, shipmentCompany, shipmentSerial);

@@ -17,6 +17,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * 订单退款
+ */
 public class ActualOrderRefundTest {
     private Long orderId = 1L;
     private Long orderIdWithWaitPaymentState = 2L;
@@ -193,6 +196,10 @@ public class ActualOrderRefundTest {
         return orderRepository;
     }
 
+    /**
+     * 申请退款成功
+     * @throws Exception
+     */
     @Test
     public void applyRefundOnce() throws Exception {
         RefundApply apply = orderService.applyRefund(orderId, refundReason, refundRemark);
@@ -202,6 +209,10 @@ public class ActualOrderRefundTest {
         assertThat(apply.getRemark()).isEqualTo(refundRemark);
     }
 
+    /**
+     * 申请退款失败，已存在处理中的退款申请
+     * @throws Exception
+     */
     @Test
     public void applyRefundTwice() throws Exception {
         RefundApply apply = orderService.applyRefund(orderIdWithRefusedApply, refundReason, refundRemark);
@@ -211,6 +222,10 @@ public class ActualOrderRefundTest {
         assertThat(apply.getRemark()).isEqualTo(refundRemark);
     }
 
+    /**
+     * 存在退款申请，申请退款失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void existsRefundApplyInProcess() throws Exception {
         orderService.applyRefund(orderIdExistsWaitAgreeApply, refundReason, refundRemark);
@@ -222,11 +237,19 @@ public class ActualOrderRefundTest {
     }
 
 
+    /**
+     * 尚未付款，申请退款失败
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void applyRefundWithWaitPaymentState() throws Exception {
         orderService.applyRefund(orderIdWithWaitPaymentState, refundReason, refundRemark);
     }
 
+    /**
+     * 卖家同意退款
+     * @throws Exception
+     */
     @Test
     public void agreeRefund() throws Exception {
         RefundApply apply = refundApplyService.agree(refundId);
@@ -236,6 +259,10 @@ public class ActualOrderRefundTest {
         assertThat(((ActualOrder)apply.getOrder()).getState()).isEqualTo(ActualOrderState.CANCELED);
     }
 
+    /**
+     * 卖家拒绝退款
+     * @throws Exception
+     */
     @Test
     public void refuseRefund() throws Exception {
         RefundApply apply = refundApplyService.refuse(refuseRefundId, refuseRemark);
@@ -243,11 +270,19 @@ public class ActualOrderRefundTest {
 
     }
 
+    /**
+     * 拒绝退款状态不正确
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void refuseRefundWithInvalidState() throws Exception {
         refundApplyService.refuse(refuseRefundIdWithInvalidState, refuseRemark);
     }
 
+    /**
+     * 买家关闭退款申请
+     * @throws Exception
+     */
     @Test
     public void cancelRefundApply() throws Exception {
         RefundApply apply = refundApplyService.cancel(cancelRefundId);
@@ -255,6 +290,10 @@ public class ActualOrderRefundTest {
 
     }
 
+    /**
+     * 关闭退款申请状态不正确
+     * @throws Exception
+     */
     @Test(expected = IllegalStateException.class)
     public void cancelRefundApplyWithInvalidState() throws Exception {
         RefundApply apply = refundApplyService.cancel(cancelRefundIdWithInvalidState);
